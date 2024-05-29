@@ -32,7 +32,8 @@ class Controller:
     def handleYearDDSelection(self, e):
         self.allTeams = self._model.getTeamsOfYear(self._view._ddAnno.value)
         self._view._txtOutSquadre.clean()
-        self._view._txtOutSquadre.controls.append(ft.Text(f"Ho trovato {len(teams)} squadre che hanno giocato nell'anno {self._view._ddAnno.value}"))
+        self._view._ddSquadra.options = []
+        self._view._txtOutSquadre.controls.append(ft.Text(f"Ho trovato {len(self.allTeams)} squadre che hanno giocato nell'anno {self._view._ddAnno.value}"))
         for t in self.allTeams:
             self._view._txtOutSquadre.controls.append(ft.Text(f"{t.teamCode}"))
             self._view._ddSquadra.options.append(ft.dropdown.Option(data = t,
