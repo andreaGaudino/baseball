@@ -9,10 +9,25 @@ class Controller:
         self._model = model
 
     def handleCreaGrafo(self, e):
-        pass
+        if self._view._ddAnno.value is None:
+            self._view._txt_result.controls.append(ft.Text(f"Seleziona un anno"))
+            return
+        self._model.buildGraph(self._view._ddAnno.value)
+        self._view._txt_result.clean()
+        n,a = self._model.getGraphDetails()
+        self._view._txt_result.controls.append(ft.Text(f"Il grafo è fatto di {n} nodi e {a} archi"))
+        self._view.update_page()
+
+
 
     def handleDettagli(self, e):
-        pass
+        v0 = self.selectedTeam
+        vicini = self._model.getSortedNeighbors(self.selectedTeam)
+        self._view._txt_result.clear()
+        self._view._txt_result.controls.append(ft.Text(f"Stampo i vicini di {self.selectedTeam}"))
+        for v in vicini:
+            self._view._txt_result.controls.append(ft.Text(f"{v[1]} - {v[0]}"))
+        self._view.update_page()
 
     def handlePercorso(self, e):
         pass
