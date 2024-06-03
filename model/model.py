@@ -76,22 +76,28 @@ class Model:
                 parziale.pop()
 
     def ricorsioneV2(self, parziale):
+        # verifico se sol attuale è migliore del best
         if self.getScore(parziale) > self.bestObjVal:
-            self.bestPath = copy.deepcopy(parziale)
-            self.bestObjVal = self.getScore(parziale)
+            self._bestPath = copy.deepcopy(parziale)
+            self._bestObjVal = self.getScore(parziale)
 
+        # verifico se posso aggiungere un altro elemeneto
         listaVicini = []
         for v in self.grafo.neighbors(parziale[-1]):
             edgeV = self.grafo[parziale[-1]][v]["weight"]
-            listaVicini.append((v,edgeV))
-            listaVicini.sort(key=lambda x:x[1], reverse=True)
-            for v1 in listaVicini:
+            listaVicini.append((v, edgeV))
 
-                if v1[0] not in parziale and self.grafo[parziale[-2]][parziale[-1]]["weight"] > v1[1]:
-                    parziale.append(v1[0])
-                    self.ricorsione(parziale)
-                    parziale.pop()
-                    return
+        listaVicini.sort(key=lambda x: x[1], reverse=True)
+
+        for v1 in listaVicini:
+            if (v1[0] not in parziale and
+                    self.grafo[parziale[-2]][parziale[-1]]["weight"] >
+                    v1[1]):
+                parziale.append(v1[0])
+                self.ricorsioneV2(parziale)
+                parziale.pop()
+                return
+        # aggiungo e faccio ricorsione
 
 
 

@@ -1,3 +1,5 @@
+import warnings
+
 import flet as ft
 
 
@@ -7,6 +9,7 @@ class Controller:
         self._view = view
         # the model, which implements the logic of the program and holds the data
         self._model = model
+        self.selectedTeam = None
 
     def handleCreaGrafo(self, e):
         if self._view._ddAnno.value is None:
@@ -23,14 +26,18 @@ class Controller:
     def handleDettagli(self, e):
         v0 = self.selectedTeam
         vicini = self._model.getSortedNeighbors(self.selectedTeam)
-        self._view._txt_result.clear()
+        self._view._txt_result.clean()
         self._view._txt_result.controls.append(ft.Text(f"Stampo i vicini di {self.selectedTeam}"))
         for v in vicini:
             self._view._txt_result.controls.append(ft.Text(f"{v[1]} - {v[0]}"))
         self._view.update_page()
 
     def handlePercorso(self, e):
-        pass
+        if self.selectedTeam is None:
+            warnings.warn("Squadra non selezionata")
+            self._view._txt_result.controls.clear()
+            self._view._txt_result.controls.append(ft.Text(f"Squadra non selezionata"))
+            self._view.update_page()
 
     def fillDDYear(self):
         years = self._model.getYears()
