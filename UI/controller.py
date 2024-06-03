@@ -38,6 +38,11 @@ class Controller:
             self._view._txt_result.controls.clear()
             self._view._txt_result.controls.append(ft.Text(f"Squadra non selezionata"))
             self._view.update_page()
+        path = self._model.getPercorso(self.selectedTeam)
+        self._view._txt_result.clean()
+        for p in path:
+            self._view._txt_result.controls.append(ft.Text(f"{p[0]} -- {p[1]}"))
+        self._view.update_page()
 
     def fillDDYear(self):
         years = self._model.getYears()

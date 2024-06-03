@@ -17,7 +17,7 @@ class Model:
         if len(listOfNodes) == 1:
             return score
         for i in range(len(listOfNodes)-1):
-            score += self.grafo[listOfNodes[i]][listOfNodes[i+1]]["weight"]
+            score += self.grafo[listOfNodes[i][0]][listOfNodes[i+1][0]]["weight"]
 
         return score
 
@@ -48,20 +48,35 @@ class Model:
         #             self.grafo.add_edge(t1, t2)
 
 
+    def getWeightsOfPath(self, path):
+        listaTuples =[(path[0], 0)]
+        path.remove(path[0])
+        for i in range(len(path)):
+            listaTuples.append( (path[i+1], self.grafo[path[i]][path[i+1]]["weight"]) )
+
+        return listaTuples
+
 
     def getPercorso(self, v0):
         self.bestPath = []
         self.bestObjVal = 0
 
-        parziale = [v0]
+        parziale = [(v0,0)]
 
         # for v in self.grafo.neighbors(v0):
         #     parziale.append(v)
         #     self.ricorsione(parziale)
         #     parziale.pop()
 
+        listaVicini = []
+        for v in self.grafo.neighbors(v0):
+            edgeV = self.grafo[v0][v]["weight"]
+            listaVicini.append((v, edgeV))
+        listaVicini.sort(key=lambda x: x[1], reverse=True)
+
+        parziale.append(listaVicini[0])
         self.ricorsioneV2(parziale)
-        return self.bestPath
+        return self.getWeightsOfPath(self.bestPath)
 
     def ricorsione(self, parziale):
         if self.getScore(parziale) > self.bestObjVal:
@@ -83,7 +98,7 @@ class Model:
 
         # verifico se posso aggiungere un altro elemeneto
         listaVicini = []
-        for v in self.grafo.neighbors(parziale[-1]):
+        for v in self.grafo.neighbors(parziale[-1][0]):
             edgeV = self.grafo[parziale[-1]][v]["weight"]
             listaVicini.append((v, edgeV))
 
@@ -91,7 +106,7 @@ class Model:
 
         for v1 in listaVicini:
             if (v1[0] not in parziale and
-                    self.grafo[parziale[-2]][parziale[-1]]["weight"] >
+                    self.grafo[parziale[-2][0]][parziale[-1][0]]["weight"] >
                     v1[1]):
                 parziale.append(v1[0])
                 self.ricorsioneV2(parziale)
